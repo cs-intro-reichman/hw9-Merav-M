@@ -94,20 +94,18 @@ public class LinkedList {
 			newNode.next = first;
 			first = newNode;
 			if (size == 0) {
-				last = newNode; // Update last if the list was previously empty
+				last = newNode;
 			}
 		} else if (index == size) {
-			// Insert at the end of the list
 			last.next = newNode;
 			last = newNode;
 		} else {
-			// Insert at the middle of the list
-			Node prev = getNode(index - 1); // Get the node just before the insertion point
+			Node prev = getNode(index - 1);
 			newNode.next = prev.next;
 			prev.next = newNode;
 		}
 
-		size++; // Increment the size of the list
+		size++;
 	}
 
 	/**
@@ -121,16 +119,14 @@ public class LinkedList {
 		Node newNode = new Node(block);
 	
 		if (size == 0) {
-			// Case 1: List is empty
-			first = newNode; // First node becomes the new node
-			last = newNode;  // Last node also points to the new node
+			first = newNode;
+			last = newNode;
 		} else {
-			// Case 2: List is not empty
-			last.next = newNode; // Link the current last node to the new node
-			last = newNode;      // Update last to point to the new node
+			last.next = newNode;
+			last = newNode; 
 		}
 	
-		size++; // Increment the size of the list
+		size++;
 	}
 	
 	/**
@@ -145,7 +141,7 @@ public class LinkedList {
 		newNode.next = first;
 			first = newNode;
 			if (size == 0) {
-				last = newNode; // Update last if the list was previously empty
+				last = newNode;
 			}
 			size++;
 	}
@@ -180,18 +176,18 @@ public class LinkedList {
 	 * @return the index of the block, or -1 if the block is not in this list
 	 */
 	public int indexOf(MemoryBlock block) {
-		Node current = first; // Start from the head of the list
+		Node current = first;
 		int index = 0;
 	
 		while (current != null) {
-			if (current.block.equals(block)) { // Compare memory blocks
-				return index; // Return index if found
+			if (current.block.equals(block)) { 
+				return index;
 			}
-			current = current.next; // Move to the next node
+			current = current.next;
 			index++;
 		}
 	
-		return -1; // Block not found in the list
+		return -1;
 	}
 
 	/**
@@ -205,20 +201,19 @@ public class LinkedList {
 			throw new NullPointerException("ERROR NullPointerException!");
 		}
 		if (first == null) {
-			return; // Nothing to remove if the list is empty
+			return;
 		}
 	
 		// Case 1: Removing the first node
 		if (node == first) {
-			first = first.next; // Move head to the next node
+			first = first.next;
 			if (first == null) { 
-				last = null; // If the list becomes empty, update last
+				last = null;
 			}
 			size--;
 			return;
 		}
 	
-		// Traverse the list to find the node and its previous node
 		Node current = first;
 		Node previous = null;
 	
@@ -227,17 +222,15 @@ public class LinkedList {
 			current = current.next;
 		}
 	
-		// If the node is not found in the list, do nothing
 		if (current == null) {
-			return; // Node to be removed doesn't exist in the list
+			return;
 		}
 	
-		// If node is found, remove it
-		previous.next = current.next; // Skip the node to remove it
+		previous.next = current.next;
 		if (current == last) { 
-			last = previous; // If last node is removed, update last
+			last = previous;
 		}
-		size--; // Decrement size after removal
+		size--;
 	}
 
 	/**
@@ -252,17 +245,15 @@ public class LinkedList {
 			throw new IllegalArgumentException("index must be between 0 and size");
 		}
 	
-		// Case 1: Removing the first node
 		if (index == 0) {
-			first = first.next; // Move head to the next node
+			first = first.next;
 			if (first == null) { 
-				last = null; // If the list becomes empty, update last
+				last = null;
 			}
 			size--;
 			return;
 		}
 	
-		// Traverse the list to find the node at index
 		Node current = first;
 		Node previous = null;
 	
@@ -270,12 +261,11 @@ public class LinkedList {
 			previous = current;
 			current = current.next;
 		}
-	
-		// Case 2: Removing a middle or last node
-		previous.next = current.next; // Skip the node
+
+		previous.next = current.next;
 	
 		if (current == last) { 
-			last = previous; // If last node is removed, update last
+			last = previous;
 		}
 	
 		size--;
@@ -293,17 +283,15 @@ public class LinkedList {
 			throw new IllegalArgumentException("index must be between 0 and size");
 		}
 	
-		// Case 1: Removing the first node
 		if (first.block.equals(block)) {
-			first = first.next; // Move head to the next node
+			first = first.next;
 			if (first == null) { 
-				last = null; // If list becomes empty, update last
+				last = null;
 			}
 			size--;
 			return;
 		}
 	
-		// Traverse the list to find the node pointing to the given memory block
 		Node current = first;
 		Node previous = null;
 	
@@ -312,18 +300,15 @@ public class LinkedList {
 			current = current.next;
 		}
 	
-		// If block was not found, throw an exception
 		if (current == null) {
 			throw new IllegalArgumentException("index must be between 0 and size");
 		}
 	
-		// Case 2: Removing a middle or last node
-		previous.next = current.next; // Skip the node
+		previous.next = current.next;
 	
 		if (current == last) { 
-			last = previous; // If last node is removed, update last
+			last = previous;
 		}
-	
 		size--;
 	}
 

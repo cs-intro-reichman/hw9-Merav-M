@@ -65,33 +65,30 @@ public class MemorySpace {
 			return -1;
 		}
 	
-		ListIterator it = freeList.iterator(); // Create an iterator for the free list.
+		ListIterator it = freeList.iterator();
 	
 		while (it.hasNext()) {
-			MemoryBlock freeBlock = it.next(); // Get the next free memory block.
+			MemoryBlock freeBlock = it.next();
 	
 			if (freeBlock.length >= length) {
-				int baseAddress = freeBlock.baseAddress; // Store the base address to return.
+				int baseAddress = freeBlock.baseAddress;
 	
-				// Case 1: Exact match, remove the block from the free list.
 				if (freeBlock.length == length) {
 					freeList.remove(freeBlock); 
 				}
-				// Case 2: Free block is larger, modify its properties.
 				else {
-					freeBlock.baseAddress += length; // Move the base address forward.
-					freeBlock.length -= length; // Reduce the size of the free block.
+					freeBlock.baseAddress += length;
+					freeBlock.length -= length;
 				}
 	
-				// Create a new allocated block and add it to the allocated list.
 				MemoryBlock allocatedBlock = new MemoryBlock(baseAddress, length);
 				allocatedList.addLast(allocatedBlock);
 	
-				return baseAddress; // Return the base address of the allocated block.
+				return baseAddress;
 			}
 		}
 	
-		return -1; // No suitable block found.
+		return -1;
 	}
 
 	/**
@@ -103,7 +100,7 @@ public class MemorySpace {
 	 *            the starting address of the block to freeList
 	 */
 	public void free(int address) {
-		ListIterator it = allocatedList.iterator(); // Create an iterator for allocated blocks
+		ListIterator it = allocatedList.iterator();
 		if (it.current == null) {
 			throw new IllegalArgumentException( "index must be between 0 and size");
 		}
@@ -112,11 +109,10 @@ public class MemorySpace {
 		while (it.hasNext()) {
 			MemoryBlock allocatedBlock = it.next();
 	
-			// If a block with the given base address is found
 			if (allocatedBlock.baseAddress == address) {
-				allocatedList.remove(allocatedBlock); // Remove from allocated list
-				freeList.addLast(allocatedBlock); // Add to the end of free list
-				return; // Exit after freeing the memory block
+				allocatedList.remove(allocatedBlock);
+				freeList.addLast(allocatedBlock);
+				return;
 			}
 		}
 	}
@@ -137,69 +133,34 @@ public class MemorySpace {
 	 */
 	public void defrag() {
 		if (freeList.getSize() <= 1) {
-			return; // No need to defragment if there are 0 or 1 blocks
+			return;
 		}
 	
-		// Extract and copy all memory blocks into a temporary array for processing
 		ListIterator it = freeList.iterator();
 		MemoryBlock[] blocks = new MemoryBlock[freeList.getSize()];
 		int i = 0;
 	
 		while (it.hasNext()) {
 			MemoryBlock block = it.next();
-			blocks[i++] = new MemoryBlock(block.baseAddress, block.length); // Create fresh copies
+			blocks[i++] = new MemoryBlock(block.baseAddress, block.length);
 		}
 	
-		// Sort the array of blocks by base address
 		Arrays.sort(blocks, Comparator.comparingInt(block -> block.baseAddress));
 	
-		// Clear the original freeList to rebuild it
 		freeList = new LinkedList();
 	
-		// Traverse the sorted blocks and merge adjacent ones
 		MemoryBlock current = blocks[0];
 		for (i = 1; i < blocks.length; i++) {
 			MemoryBlock next = blocks[i];
 	
-			// If adjacent, merge the blocks
 			if (current.baseAddress + current.length == next.baseAddress) {
-				current.length += next.length; // Extend the current block
+				current.length += next.length;
 			} else {
-				// Add the non-adjacent block to the freeList
 				freeList.addLast(current);
-				current = next; // Move to the next block
+				current = next;
 			}
 		}
 	
-		// Add the last merged or standalone block to the freeList
 		freeList.addLast(current);
 	}
-
-	/**
- * Sorts a LinkedList of MemoryBlock objects by base address.
- * 
- * @param list the list to sort
- */
-private void sortListByBaseAddress(LinkedList list) {
-    if (list.getSize() <= 1) {
-        return; // No need to sort if list has 0 or 1 element
-    }
-
-    MemoryBlock[] blocks = new MemoryBlock[list.getSize()];
-    ListIterator it = list.iterator();
-    int i = 0;
-
-    while (it.hasNext()) {
-        blocks[i++] = it.next();
-    }
-
-    // Sort the blocks array by base address
-    Arrays.sort(blocks, Comparator.comparingInt(block -> block.baseAddress));
-
-    // Clear and rebuild the list in sorted order
-    list = new LinkedList(); // Reset the list
-    for (MemoryBlock block : blocks) {
-        list.addLast(block);
-    }
-}
 }
